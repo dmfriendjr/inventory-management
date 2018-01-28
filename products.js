@@ -86,9 +86,9 @@ module.exports = class Products {
             });
     }
 
-    updateProduct(productId, quantity) {
+    updateProductQuantity(productId, quantity) {
         return new Promise( (resolve, reject) => {
-            this.connection.query('UPDATE products SET stock_quantity = ? WHERE item_id = ?', [quantity, productId], (err, res) => {
+            this.connection.query('UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?', [quantity, productId], (err, res) => {
                 if (err) reject(err);
                 resolve(true);
             });

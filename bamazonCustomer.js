@@ -24,7 +24,7 @@ function displayUI () {
             productManager.getProdutInfo(productInput.productId);
 
             if (quantityInput.productQuantity <= productInfo.stock_quantity) {
-                var orderComplete = await productManager.updateProduct(productInput.productId, productInfo.stock_quantity - quantityInput.productQuantity);
+                var orderComplete = await productManager.updateProductQuantity(productInput.productId,  -quantityInput.productQuantity);
                 if (orderComplete) {
                     console.log(`Order Complete: $${(productInfo.price * quantityInput.productQuantity).toFixed(2)} Total`)
                     inquirer.prompt([

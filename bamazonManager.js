@@ -4,12 +4,12 @@ const inquirer = require('inquirer');
 let productManager = new Products();
 
 function displayUI () {
-    inquirer.prompt({
+    inquirer.prompt([{
         type: 'list',
         message: 'Choose An Action',
         choices: ['View Products for Sale', 'View Low Inventory', 'Add to Inventory', 'Add New Product'],
         name: 'action' 
-    }).then( async function (result) {
+    }]).then( async function (result) {
         switch(result.action) {
             case 'View Products for Sale':
                 await productManager.getAllProducts();
@@ -20,6 +20,20 @@ function displayUI () {
                 promptForNewAction();
             break;
             case 'Add to Inventory':
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'Enter Product ID',
+                        name: 'productId'
+                    },
+                    {
+                        type: 'input',
+                        message: 'Enter Stock To Add',
+                        name: 'productQuantity'
+                    }
+                ]).then( res => {
+                    addToInventory(res.productId, res.productQuantity);
+                })
             break;
             case 'Add New Product':
                 addProduct();
@@ -71,6 +85,12 @@ function addProduct() {
         console.log('Product Added!');
         promptForNewAction();
     })
+}
+
+async function addToInventory(productId, quantityToAdd) {
+    await productManager.updateProductQuantity(productId, quantityToAdd);
+    console.log('Updated product quantity.');
+    promptForNewAction();
 }
 
 displayUI();
