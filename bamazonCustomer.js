@@ -8,45 +8,36 @@ function displayUI () {
         {
             type: 'input',
             message: 'Enter product id you wish you purchase',
-            name: 'productId'
+            name: 'id'
+        },
+        {
+            type: 'input',
+            message: 'Enter quantity of product',
+            name: 'quantity'
         }
-    ]).then(productInput => {
-        console.log(productInput.productId);
-        console.log('Doing quantity input');
-        inquirer.prompt([
-            {
-                type: 'input',
-                message: 'Enter quantity of product',
-                name: 'productQuantity'
-            }
-        ]).then(async function(quantityInput) {
-            let productInfo = await productManager.getProdutInfo(productInput.productId);
-            productManager.getProdutInfo(productInput.productId);
+    ]).then(async function (productInput) {
+        let productInfo = await productManager.getProdutInfo(productInput.id);
+        productManager.getProdutInfo(productInput.id);
 
-            if (quantityInput.productQuantity <= productInfo.stock_quantity) {
-                //var orderComplete = await productManager.updateProductQuantity(productInput.productId,  -quantityInput.productQuantity);
-                productManager.sellProduct(productInput.productId, quantityInput.productQuantity);
-                var orderComplete = true;
-                if (orderComplete) {
-                    console.log(`Order Complete: $${(productInfo.price * quantityInput.productQuantity).toFixed(2)} Total`)
-                    inquirer.prompt([
-                        {
-                            type: 'confirm',
-                            message: 'Place another order?',
-                            name: 'confirm'
-                        }
-                    ]).then( res => {
-                        if (res.confirm) {
-                            init();
-                        } else {
-                            return;
-                        }
-                    } )
+        if (productInput.quantity <= productInfo.stock_quantity) {
+            productManager.sellProduct(productInput.id, productInput.quantity);
+            console.log(`Order Complete: $${(productInfo.price * productInput.quantity).toFixed(2)} Total`)
+            inquirer.prompt([
+                {
+                    type: 'confirm',
+                    message: 'Place another order?',
+                    name: 'confirm'
                 }
-            } else {
-                console.log('Insufficient quantity, sorry!');
-            }
-        })
+            ]).then( res => {
+                if (res.confirm) {
+                    init();
+                } else {
+                    return;
+                }
+            } )
+        } else {
+            console.log('Insufficient quantity, sorry!');
+        }
     })
 }
 
