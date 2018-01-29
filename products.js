@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const Table = require('cli-table');
 
 module.exports = class Products {
     constructor() {
@@ -70,13 +71,19 @@ module.exports = class Products {
     }
 
     logProductData(data) {
-        data.forEach(product => {
-            let log = '';
-            for (let attr in product) {
-                log += `${(attr.charAt(0).toUpperCase() + attr.slice(1)).replace(/_/g, " ")}: ${product[attr]} | `
-            }
-            console.log(log);
+        let table = new Table({
+            head: ['Product ID', 'Product Name', 'Department Name', 'Price', 'Stock', 'Sales'],
         });
+
+        data.forEach(product => {
+            let arr = []; 
+            for (let attr in product) {
+                arr.push(product[attr]);   
+            }
+            table.push(arr);
+        });
+
+        console.log(table.toString());
     }
     
     
