@@ -22,78 +22,52 @@ module.exports = class Products {
         this.isConnected = false;
     }
     
-    getAllProducts() {
-        if (!this.isConnected) {
-            this.makeConnection();
-        }
-    
-        return new Promise( (resolve, reject) => {
-            this.connection.query('SELECT * FROM products', (err, res) => {
-                if (err) reject(err);
-                this.logProductData(res);
-                resolve();
-            });
-        })
+    async getAllProducts() {
+        let result = await this.doQuery('SELECT * FROM products');
+        this.logProductData(result);
     }
     
-    getProdutInfo(productId) {
-        if (!this.isConnected) {
-            this.makeConnection();
-        }
-    
-        return new Promise( (resolve, reject) => {
-            this.connection.query('SELECT  * FROM products WHERE item_id = ?', productId, (err, res) => {
-                if (err) reject(err);
-                resolve(res[0]);
-            });
-        })
+    async getProdutInfo(productId) {
+        let result = await this.doQuery('SELECT  * FROM products WHERE item_id = ?', productId);
+        return result[0];
     }
     
-    checkItemQuantity(productId) {
-        if (!this.isConnected) {
-            this.makeConnection();
-        }
-        return new Promise( (resolve, reject) => {
-            this.connection.query('SELECT * FROM products WHERE item_id = ?', productId, (err, res) => {
-                if (err) throw err;
-                resolve(res[0].stock_quantity);
-            });
-        });
+    async sellProduct(productId, quantity) {
+        await this.doQuery('UPDATE products SET stock_quantity = stock_quantity - ?, product_sales = product_sales + price * ? WHERE item_id = ?',
+            [quantity, quantity, productId]);
     }
 
-    getLowQuantityItems() {
-        if (!this.isConnected) {
-            this.makeConnection();
-        }
-
-        return new Promise( (resolve, reject) => {
-            this.connection.query('SELECT * FROM products WHERE stock_quantity <= 5', (err, res) => {
-                if (err) reject(err);
-                this.logProductData(res);
-                resolve();
-            })
-        })
+    async getLowQuantityItems() {
+        let result = await this.doQuery('SELECT * FROM products WHERE stock_quantity <= 5');
+        this.logProductData(result);
     }
 
-    addProduct(productName, departmentName, price, currentStock) {
-        if (!this.isConnected) {
-            this.makeConnection();
-        }
-
-        this.connection.query('INSERT INTO products (product_name, department_name, price, stock_quantity) VALUE (?, ?, ?, ?)', 
-            [productName, departmentName, price, currentStock], (err, res) => {
-                if (err) throw err;
-            });
+    async addProduct(productName, departmentName, price, currentStock) {
+        await this.doQuery('INSERT INTO products (product_name, department_name, price, stock_quantity) VALUE (?, ?, ?, ?)', 
+            [productName, departmentName, price, currentStock]);
     }
 
-    updateProductQuantity(productId, quantity) {
-        return new Promise( (resolve, reject) => {
-            this.connection.query('UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?', [quantity, productId], (err, res) => {
-                if (err) reject(err);
-                resolve(true);
-            });
-        });
+    async updateProductQuantity(productId, quantity) {
+        await this.doQuery('UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?', [quantity, productId]);
     } 
+
+    async doQuery(queryString, queryParams) {
+        if (!this.isConnected) {
+            this.makeConnection();
+        }
+        queryParams = queryParams || [];
+
+        let result;
+        await new Promise( (resolve, reject) => {
+                this.connection.query(queryString, queryParams, (err, res) => {
+                    if (err) result = err;
+                    result = res;
+                    resolve();
+                });
+            });
+
+        return result;
+    }
 
     logProductData(data) {
         data.forEach(product => {

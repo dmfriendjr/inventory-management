@@ -24,7 +24,9 @@ function displayUI () {
             productManager.getProdutInfo(productInput.productId);
 
             if (quantityInput.productQuantity <= productInfo.stock_quantity) {
-                var orderComplete = await productManager.updateProductQuantity(productInput.productId,  -quantityInput.productQuantity);
+                //var orderComplete = await productManager.updateProductQuantity(productInput.productId,  -quantityInput.productQuantity);
+                productManager.sellProduct(productInput.productId, quantityInput.productQuantity);
+                var orderComplete = true;
                 if (orderComplete) {
                     console.log(`Order Complete: $${(productInfo.price * quantityInput.productQuantity).toFixed(2)} Total`)
                     inquirer.prompt([
