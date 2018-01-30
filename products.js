@@ -52,6 +52,10 @@ module.exports = class Products {
         await this.doQuery('UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?', [quantity, productId]);
     } 
 
+    async createNewDepartment(departmentName, overheadCosts) {
+        await this.doQuery('INSERT INTO departments (department_name, over_head_costs) VALUE (?,?)', [departmentName, overheadCosts]);
+    }
+
     async getSalesByDepartment() {
         let result = await this.doQuery(`SELECT department_id, d.department_name, over_head_costs, sales, sales-over_head_costs as total_profit FROM departments as d
             join ( 

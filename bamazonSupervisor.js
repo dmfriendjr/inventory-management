@@ -16,8 +16,21 @@ function displayUI () {
                 promptForNewAction();
             break;
             case 'Create New Department':
-                await productManager.getLowQuantityItems();
-                promptForNewAction();
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'Enter Department Name',
+                        name: 'name'
+                    }, 
+                    {
+                        type: 'input',
+                        message: 'Enter Overhead Cost',
+                        name: 'overhead'
+                    }
+                ]).then(async function(department) {
+                    await productManager.createNewDepartment(department.name, department.overhead);
+                    promptForNewAction();
+                })
             break;
         }
     })
