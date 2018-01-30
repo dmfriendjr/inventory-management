@@ -12,7 +12,7 @@ function displayUI () {
             validate: (input) => {
                 input = parseInt(input);
                 if (isNaN(input) || input > productManager.totalProducts) {
-                    return 'Please enter a valid number'
+                    return 'Please enter a valid number';
                 } else {
                     return true;
                 }
@@ -33,7 +33,6 @@ function displayUI () {
         }
     ]).then(async function (productInput) {
         let productInfo = await productManager.getProdutInfo(productInput.id);
-        productManager.getProdutInfo(productInput.id);
 
         if (productInput.quantity <= productInfo.stock_quantity) {
             productManager.sellProduct(productInput.id, productInput.quantity);
