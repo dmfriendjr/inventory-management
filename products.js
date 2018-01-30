@@ -52,6 +52,15 @@ module.exports = class Products {
         await this.doQuery('UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?', [quantity, productId]);
     } 
 
+    async getSalesByDepartment() {
+        let result = await this.doQuery(`SELECT department_id, d.department_name, over_head_costs, sales, sales-over_head_costs as total_profit FROM departments as d
+            join ( 
+                SELECT products.department_name, sum(product_sales) as sales
+                from products group by department_name) as p
+                ON p.department_name = d.department_name;`);
+        this.logProductData(result);
+    }
+
     async doQuery(queryString, queryParams) {
         if (!this.isConnected) {
             this.makeConnection();
@@ -71,8 +80,19 @@ module.exports = class Products {
     }
 
     logProductData(data) {
+
+        let headers = [];
+        for(var key in data[0]) {
+            let name = key.split('_');
+            name.forEach( (str, i) => {
+                name[i] = str.charAt(0).toUpperCase() + str.slice(1);
+            });
+
+            headers.push(name.join(' '));
+        };
+
         let table = new Table({
-            head: ['Product ID', 'Product Name', 'Department Name', 'Price', 'Stock', 'Sales'],
+            head: headers
         });
 
         data.forEach(product => {
