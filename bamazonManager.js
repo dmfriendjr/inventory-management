@@ -58,7 +58,9 @@ function promptForNewAction() {
     })
 }
 
-function addProduct() {
+async function addProduct() {
+    let validDepartmentNames = await productManager.getAllDepartments();
+
     inquirer.prompt([
         {
         type: 'input',
@@ -66,8 +68,9 @@ function addProduct() {
         name: 'name'
         },
         {
-            type: 'input',
-            message: 'Enter Department Name',
+            type: 'list',
+            choices: validDepartmentNames,
+            message: 'Choose Department (Contact Supervisor To Add New Departments)',
             name: 'department'
         },
         {

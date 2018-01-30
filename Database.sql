@@ -31,4 +31,8 @@ VALUES ('TV', 'Electronics', '499.99', '100'),
 ('Wine', 'Alcohol', '19.99', '50'),
 ('Xbox Game', 'Video Games', '59.99', '250');
 
+INSERT INTO departments (department_name, over_head_costs) 
+VALUES ('Electronics', 10000), ('Furniture', 250000), ('Food', 10000), 
+('Alcohol', 500), ('Video Games', 10000);
+
 SELECT * FROM products;

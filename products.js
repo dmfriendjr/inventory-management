@@ -58,6 +58,15 @@ module.exports = class Products {
         await this.doQuery('INSERT INTO departments (department_name, over_head_costs) VALUE (?,?)', [departmentName, overheadCosts]);
     }
 
+    async getAllDepartments() {
+        let result = await this.doQuery('SELECT department_name from departments');
+        let names = [];
+        result.forEach(element => {
+            names.push(element.department_name);
+        })
+        return names;
+    }
+
     async getSalesByDepartment() {
         let result = await this.doQuery(`SELECT department_id, d.department_name, over_head_costs, sales, sales-over_head_costs as total_profit FROM departments as d
             join ( 
@@ -86,7 +95,7 @@ module.exports = class Products {
     }
 
     logProductData(data) {
-
+        console.log(data);
         let headers = [];
         for(var key in data[0]) {
             let name = key.split('_');
