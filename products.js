@@ -4,6 +4,7 @@ const Table = require('cli-table');
 module.exports = class Products {
     constructor() {
         this.makeConnection();
+        this.totalProducts = 0;
     }
 
     makeConnection() {
@@ -25,6 +26,7 @@ module.exports = class Products {
     
     async getAllProducts() {
         let result = await this.doQuery('SELECT * FROM products');
+        this.totalProducts = result.length;
         this.logProductData(result);
     }
     

@@ -8,12 +8,28 @@ function displayUI () {
         {
             type: 'input',
             message: 'Enter product id you wish you purchase',
-            name: 'id'
+            name: 'id',
+            validate: (input) => {
+                input = parseInt(input);
+                if (isNaN(input) || input > productManager.totalProducts) {
+                    return 'Please enter a valid number'
+                } else {
+                    return true;
+                }
+            }
         },
         {
             type: 'input',
             message: 'Enter quantity of product',
-            name: 'quantity'
+            name: 'quantity',
+            validate: (input) => {
+                input = parseInt(input);
+                if (isNaN(input)) {
+                    return 'Please enter a valid number';
+                } else {
+                    return true;
+                }
+            }
         }
     ]).then(async function (productInput) {
         let productInfo = await productManager.getProdutInfo(productInput.id);
@@ -22,23 +38,26 @@ function displayUI () {
         if (productInput.quantity <= productInfo.stock_quantity) {
             productManager.sellProduct(productInput.id, productInput.quantity);
             console.log(`Order Complete: $${(productInfo.price * productInput.quantity).toFixed(2)} Total`)
-            inquirer.prompt([
-                {
-                    type: 'confirm',
-                    message: 'Place another order?',
-                    name: 'confirm'
-                }
-            ]).then( res => {
-                if (res.confirm) {
-                    init();
-                } else {
-                    return;
-                }
-            } )
+            promptForNewAction();
         } else {
             console.log('Insufficient quantity, sorry!');
+            promptForNewAction();
         }
     })
+}
+
+function promptForNewAction() {
+    inquirer.prompt([
+        {
+            type: 'confirm',
+            message: 'Place another order?',
+            name: 'confirm'
+        }
+    ]).then( res => {
+        if (res.confirm) {
+            init();
+        } 
+    });
 }
 
 async function init() {
