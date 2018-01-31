@@ -14,42 +14,19 @@ function displayUI () {
             case 'View Products for Sale':
                 await productManager.getAllProducts();
                 promptForNewAction();
-            break;
+                break;
             case 'View Low Inventory':
                 await productManager.getLowQuantityItems();
                 promptForNewAction();
-            break;
+                break;
             case 'Add to Inventory':
-                inquirer.prompt([
-                    {
-                        type: 'input',
-                        message: 'Enter Product ID',
-                        name: 'productId',
-                        validate: (input) => {
-                            input = parseInt(input);
-                            if (isNaN(input) || input > productManager.totalProducts) {
-                                return 'Please enter a valid number';
-                            } else {
-                                return true;
-                            }
-                        }
-                    },
-                    {
-                        type: 'input',
-                        message: 'Enter Stock To Add',
-                        name: 'productQuantity'
-                    }
-                ]).then( res => {
-                    addToInventory(res.productId, res.productQuantity);
-                })
-            break;
+                addToInventory();
+                break;
             case 'Add New Product':
                 addProduct();
-            break;
+                break;
         }
     })
-
-    return;
 }
 
 function promptForNewAction() {
@@ -114,10 +91,33 @@ async function addProduct() {
     })
 }
 
-async function addToInventory(productId, quantityToAdd) {
-    await productManager.updateProductQuantity(productId, quantityToAdd);
-    console.log('Updated product quantity.');
-    promptForNewAction();
+async function addToInventory() {
+    await productManager.getAllProducts();
+
+    await inquirer.prompt([
+        {
+            type: 'input',
+            message: 'Enter Product ID',
+            name: 'productId',
+            validate: (input) => {
+                input = parseInt(input);
+                if (isNaN(input) || input > productManager.totalProducts) {
+                    return 'Please enter a valid number';
+                } else {
+                    return true;
+                }
+            }
+        },
+        {
+            type: 'input',
+            message: 'Enter Stock To Add',
+            name: 'quantityToAdd'
+        }
+    ]).then(async function(res) {
+        await productManager.updateProductQuantity(res.productId, res.quantityToAdd);
+        console.log('Updated product quantity.');
+        promptForNewAction();
+    })
 }
 
 displayUI();

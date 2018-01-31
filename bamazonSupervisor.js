@@ -25,7 +25,15 @@ function displayUI () {
                     {
                         type: 'input',
                         message: 'Enter Overhead Cost',
-                        name: 'overhead'
+                        name: 'overhead',
+                        validate: (input) => {
+                            input = parseFloat(input);
+                            if (isNaN(input) || input < 0) {
+                                return 'Please enter a valid number';
+                            } else {
+                                return true;
+                            }
+                        }
                     }
                 ]).then(async function(department) {
                     await productManager.createNewDepartment(department.name, department.overhead);
