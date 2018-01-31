@@ -96,7 +96,7 @@ async function addProduct() {
 async function addToInventory() {
     await productManager.getAllProducts();
 
-    await inquirer.prompt([
+    inquirer.prompt([
         {
             type: 'input',
             message: 'Enter Product ID',
