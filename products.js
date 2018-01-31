@@ -95,7 +95,6 @@ module.exports = class Products {
     }
 
     logProductData(data) {
-        console.log(data);
         let headers = [];
         for(var key in data[0]) {
             let name = key.split('_');
