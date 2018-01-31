@@ -24,7 +24,15 @@ function displayUI () {
                     {
                         type: 'input',
                         message: 'Enter Product ID',
-                        name: 'productId'
+                        name: 'productId',
+                        validate: (input) => {
+                            input = parseInt(input);
+                            if (isNaN(input) || input > productManager.totalProducts) {
+                                return 'Please enter a valid number';
+                            } else {
+                                return true;
+                            }
+                        }
                     },
                     {
                         type: 'input',
@@ -76,12 +84,28 @@ async function addProduct() {
         {
             type: 'input',
             message: 'Enter Product Price',
-            name: 'price'
+            name: 'price',
+            validate: (input) => {
+                input = parseFloat(input);
+                if (isNaN(input)) {
+                    return 'Please enter a valid price'
+                } else {
+                    return true;
+                }
+            }
         },
         {
             type: 'input',
             message: 'Enter Product Quantity',
-            name: 'quantity'
+            name: 'quantity',
+            validate: (input) => {
+                input = parseInt(input);
+                if (isNaN(input) || input < 0) {
+                    return 'Please enter a valid number';
+                } else {
+                    return true;
+                }
+            }
         }
     ]).then( product => {
         productManager.addProduct(product.name, product.department, product.price, product.quantity);
