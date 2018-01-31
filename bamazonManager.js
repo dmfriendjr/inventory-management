@@ -39,6 +39,8 @@ function promptForNewAction() {
     ]).then ( res => {
         if (res.confirm) {
             displayUI();
+        } else {
+            productManager.disconnect();
         }
     })
 }

@@ -55,7 +55,9 @@ function promptForNewAction() {
     ]).then( res => {
         if (res.confirm) {
             init();
-        } 
+        } else {
+            productManager.disconnect();
+        }
     });
 }
 
