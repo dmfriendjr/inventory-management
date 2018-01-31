@@ -29,6 +29,13 @@ module.exports = class Products {
         this.totalProducts = result.length;
         this.logProductData(result);
     }
+
+    async getAllProductsCustomerView() {
+        let result = await this.doQuery
+            ('SELECT item_id, product_name, department_name, price, stock_quantity FROM products');
+        this.totalProducts = result.length;
+        this.logProductData(result);
+    }
     
     async getProdutInfo(productId) {
         let result = await this.doQuery('SELECT  * FROM products WHERE item_id = ?', productId);

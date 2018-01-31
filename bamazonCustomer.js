@@ -60,7 +60,7 @@ function promptForNewAction() {
 }
 
 async function init() {
-    await productManager.getAllProducts();
+    await productManager.getAllProductsCustomerView();
     displayUI();
 }
 
